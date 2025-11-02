@@ -1,0 +1,44 @@
+# This workflow will build and deploy your repository to GitHub Pages
+# when changes are pushed to the `main` branch.
+#
+# For more information see: https://github.com/actions/deploy-pages
+
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]  # Trigger the workflow on pushes to the main branch
+
+# Set the permissions required for deployment
+permissions:
+  contents: read      # to read the repository contents
+  pages: write        # to deploy to Pages
+  id-token: write     # to authenticate with the deploy Pages action
+
+# Only one concurrent deployment
+concurrency:
+  group: "deploy-pages"
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Set up the GitHub Pages environment
+      - name: Set up Pages
+        uses: actions/configure-pages@v3
+
+      # Upload the built site as an artifact. For a static HTML site, we can upload
+      # the repository root. Adjust `path` if your build outputs to a different directory.
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: '.'
+
+      # Deploy the artifact to GitHub Pages
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1
